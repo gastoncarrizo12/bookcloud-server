@@ -22,7 +22,7 @@ const __dirname = path.resolve();
 const isProduction = process.env.NODE_ENV === "production";
 const allowedOrigins = [
     process.env.CLIENT_URL || "http://localhost:5173",
-    "https://bookcloud-e-library.onrender.com",
+    "https://bookcloud.onrender.com",
 ];
 
 app.use(cors({
