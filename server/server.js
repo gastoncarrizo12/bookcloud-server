@@ -3,7 +3,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import path from "path";
-
+import compression from "compression";
 import authRoutes from "./routes/authRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
@@ -40,6 +40,7 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(cookieParser());
+app.use(compression());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
@@ -48,12 +49,16 @@ app.use("/api/payments", paymentRoutes);
 app.use("/api/analytics", analyticsRoutes);
 
 if (isProduction) {
-    app.use(express.static(path.join(__dirname, "/client/dist")));
+    app.use(express.static(path.join(__dirname, "/client/dist"), {
+        maxAge: "1d",
+        etag: false,  
+    }));
 
     app.get("*", (req, res) => {
         res.sendFile(path.resolve(__dirname, "client", "dist", "index.html"));
     });
 }
+
 
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en el puerto ${PORT}`)
